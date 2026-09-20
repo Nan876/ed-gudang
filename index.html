@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#1e3c72">
+  <title>ED Monitor - Wings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div class="header-top">
+        <div class="logo-container">
+          <img src="logo-wings.png" alt="Wings" class="wings-logo-img">
+          <div class="app-title">
+            <h1>ED Monitor</h1>
+            <span class="company-name">Wings Group</span>
+          </div>
+        </div>
+        <button class="btn-icon" onclick="toggleSettings()">⚙️</button>
+      </div>
+      <div class="header-badges">
+        <span class="badge-mt">MT: <span id="mtMin">6</span> bln</span>
+        <span class="badge-gt">GT: <span id="gtMin">4</span> bln</span>
+      </div>
+    </header>
+
+    <section class="settings-panel" id="settingsPanel">
+      <h3>⚙️ Pengaturan Minimum ED</h3>
+      <div class="setting-grid">
+        <div class="setting-item">
+          <label>🏬 MT</label>
+          <div class="input-with-unit">
+            <input type="number" id="mtBulan" value="6" min="1" max="24" onchange="simpanSetting()">
+            <span>bln</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <label>🏪 GT</label>
+          <div class="input-with-unit">
+            <input type="number" id="gtBulan" value="4" min="1" max="24" onchange="simpanSetting()">
+            <span>bln</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <label>🔔 MT Warn</label>
+          <div class="input-with-unit">
+            <input type="number" id="mtWarningBulan" value="7" min="1" max="24" onchange="simpanSetting()">
+            <span>bln</span>
+          </div>
+        </div>
+        <div class="setting-item">
+          <label>🔔 GT Warn</label>
+          <div class="input-with-unit">
+            <input type="number" id="gtWarningBulan" value="5" min="1" max="24" onchange="simpanSetting()">
+            <span>bln</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num" id="statTotal">0</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-item stat-lolos">
+        <div class="stat-num" id="statLolos">0</div>
+        <div class="stat-label">Lolos</div>
+      </div>
+      <div class="stat-item stat-warning">
+        <div class="stat-num" id="statWarning">0</div>
+        <div class="stat-label">Warn</div>
+      </div>
+      <div class="stat-item stat-reject">
+        <div class="stat-num" id="statReject">0</div>
+        <div class="stat-label">Reject</div>
+      </div>
+    </section>
+
+    <main class="main-content">
+      <div class="tab-content active" id="tabInput">
+        <div class="card">
+          <h2>📥 Input Produk</h2>
+          <div class="form-group">
+            <label>Channel *</label>
+            <div class="channel-selector">
+              <label class="channel-option">
+                <input type="radio" name="channel" value="MT" checked onchange="previewStatus()">
+                <span class="channel-box mt">🏬 MT</span>
+              </label>
+              <label class="channel-option">
+                <input type="radio" name="channel" value="GT" onchange="previewStatus()">
+                <span class="channel-box gt">🏪 GT</span>
+              </label>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Nama Produk *</label>
+            <input type="text" id="nama" placeholder="Contoh: Susu UHT 1L" autocomplete="off">
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Tanggal Produksi (Opsional)</label>
+              <input type="date" id="tglProduksi">
+            </div>
+            <div class="form-group">
+              <label>Supplier</label>
+              <input type="text" id="supplier" placeholder="Nama supplier" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tanggal ED (Kedaluwarsa) *</label>
+            <input type="date" id="tglED" onchange="previewStatus()">
+          </div>
+          <div class="palet-section">
+            <h3>📦 Kuantitas</h3>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Palet</label>
+                <input type="number" id="jumlahPalet" value="0" min="0" onchange="hitungTotal()" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <label>Box/Palet</label>
+                <input type="number" id="boxPerPalet" value="279" min="1" onchange="hitungTotal()" inputmode="numeric">
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Box Sisa</label>
+                <input type="number" id="boxTambahan" value="0" min="0" onchange="hitungTotal()" inputmode="numeric">
+              </div>
+              <div class="form-group">
+                <label>Total Box</label>
+                <input type="text" id="totalBox" readonly class="readonly-input" placeholder="0">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Keterangan</label>
+            <input type="text" id="keterangan" placeholder="Opsional" autocomplete="off">
+          </div>
+          <div id="previewStatus" class="preview hidden"></div>
+          <button class="btn-primary" onclick="tambahProduk()">💾 Simpan Produk</button>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tabList">
+        <div class="filter-bar">
+          <input type="text" id="searchInput" placeholder="🔍 Cari produk..." oninput="render()">
+          <select id="filterStatus" onchange="render()">
+            <option value="all">Semua</option>
+            <option value="lolos">✅ Lolos</option>
+            <option value="warning">⚠️ Warn</option>
+            <option value="reject">❌ Reject</option>
+          </select>
+        </div>
+        <div id="daftarProduk"></div>
+      </div>
+
+      <div class="tab-content" id="tabCatatan">
+        <div class="card">
+          <h2> Catatan Laporan</h2>
+          <div class="catatan-meta">
+            <span> <span id="tglCatatan"></span></span>
+            <input type="text" id="namaPetugas" placeholder="Nama petugas" autocomplete="off">
+          </div>
+          <textarea id="catatanLaporan" rows="5" placeholder="Tulis catatan hari ini..."></textarea>
+          <div class="btn-row">
+            <button class="btn-primary" onclick="simpanCatatan()">💾 Simpan</button>
+            <button class="btn-secondary" onclick="resetCatatan()">🔄 Reset</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>📚 Riwayat Catatan</h3>
+          <div id="daftarRiwayat"></div>
+        </div>
+      </div>
+    </main>
+
+    <div class="bottom-actions">
+      <button class="btn-action" onclick="exportExcel()">📊 Export</button>
+      <button class="btn-action" onclick="tarikData()"> Tarik</button>
+      <button class="btn-action btn-danger" onclick="hapusSemua()">🗑️ Hapus</button>
+    </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab('Input', this)">
+        <span class="nav-icon">📥</span>
+        <span class="nav-label">Input</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('List', this)">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Daftar</span>
+      </button>
+      <button class="nav-item" onclick="switchTab('Catatan', this)">
+        <span class="nav-icon"></span>
+        <span class="nav-label">Catatan</span>
+      </button>
+    </nav>
+
+    <footer class="app-footer">
+      <p>📅 <span id="hariIni"></span></p>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
