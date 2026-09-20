@@ -32,28 +32,28 @@
       <h3>⚙️ Pengaturan Minimum ED</h3>
       <div class="setting-grid">
         <div class="setting-item">
-          <label>🏬 MT</label>
+          <label>MT</label>
           <div class="input-with-unit">
             <input type="number" id="mtBulan" value="6" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
           </div>
         </div>
         <div class="setting-item">
-          <label>🏪 GT</label>
+          <label>GT</label>
           <div class="input-with-unit">
             <input type="number" id="gtBulan" value="4" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
           </div>
         </div>
         <div class="setting-item">
-          <label>🔔 MT Warn</label>
+          <label>MT Warn</label>
           <div class="input-with-unit">
             <input type="number" id="mtWarningBulan" value="7" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
           </div>
         </div>
         <div class="setting-item">
-          <label>🔔 GT Warn</label>
+          <label>GT Warn</label>
           <div class="input-with-unit">
             <input type="number" id="gtWarningBulan" value="5" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
@@ -90,11 +90,11 @@
             <div class="channel-selector">
               <label class="channel-option">
                 <input type="radio" name="channel" value="MT" checked onchange="previewStatus()">
-                <span class="channel-box mt">🏬 MT</span>
+                <span class="channel-box mt">MT</span>
               </label>
               <label class="channel-option">
                 <input type="radio" name="channel" value="GT" onchange="previewStatus()">
-                <span class="channel-box gt">🏪 GT</span>
+                <span class="channel-box gt">GT</span>
               </label>
             </div>
           </div>
@@ -150,11 +150,11 @@
 
       <div class="tab-content" id="tabList">
         <div class="filter-bar">
-          <input type="text" id="searchInput" placeholder="🔍 Cari produk..." oninput="render()">
+          <input type="text" id="searchInput" placeholder=" Cari produk..." oninput="render()">
           <select id="filterStatus" onchange="render()">
             <option value="all">Semua</option>
             <option value="lolos">✅ Lolos</option>
-            <option value="warning">⚠️ Warn</option>
+            <option value="warning">️ Warn</option>
             <option value="reject">❌ Reject</option>
           </select>
         </div>
@@ -163,9 +163,9 @@
 
       <div class="tab-content" id="tabCatatan">
         <div class="card">
-          <h2> Catatan Laporan</h2>
+          <h2>📝 Catatan Laporan</h2>
           <div class="catatan-meta">
-            <span> <span id="tglCatatan"></span></span>
+            <span>📅 <span id="tglCatatan"></span></span>
             <input type="text" id="namaPetugas" placeholder="Nama petugas" autocomplete="off">
           </div>
           <textarea id="catatanLaporan" rows="5" placeholder="Tulis catatan hari ini..."></textarea>
@@ -175,16 +175,16 @@
           </div>
         </div>
         <div class="card">
-          <h3>📚 Riwayat Catatan</h3>
+          <h3> Riwayat Catatan</h3>
           <div id="daftarRiwayat"></div>
         </div>
       </div>
     </main>
 
     <div class="bottom-actions">
-      <button class="btn-action" onclick="exportExcel()">📊 Export</button>
+      <button class="btn-action" onclick="exportExcel()"> Export</button>
       <button class="btn-action" onclick="tarikData()"> Tarik</button>
-      <button class="btn-action btn-danger" onclick="hapusSemua()">🗑️ Hapus</button>
+      <button class="btn-action btn-danger" onclick="hapusSemua()">️ Hapus</button>
     </div>
 
     <nav class="bottom-nav">
@@ -197,13 +197,13 @@
         <span class="nav-label">Daftar</span>
       </button>
       <button class="nav-item" onclick="switchTab('Catatan', this)">
-        <span class="nav-icon"></span>
+        <span class="nav-icon">📝</span>
         <span class="nav-label">Catatan</span>
       </button>
     </nav>
 
     <footer class="app-footer">
-      <p>📅 <span id="hariIni"></span></p>
+      <p> <span id="hariIni"></span></p>
     </footer>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
