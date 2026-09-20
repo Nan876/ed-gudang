@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e3c72">
   <title>ED Monitor - Wings</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
   <div class="app">
@@ -102,15 +102,13 @@
             <label>Nama Produk *</label>
             <input type="text" id="nama" placeholder="Contoh: Susu UHT 1L" autocomplete="off">
           </div>
-          <div class="form-row-2">
-            <div class="form-group">
-              <label>Tanggal Produksi (Opsional)</label>
-              <input type="date" id="tglProduksi">
-            </div>
-            <div class="form-group">
-              <label>Supplier</label>
-              <input type="text" id="supplier" placeholder="Nama supplier" autocomplete="off">
-            </div>
+          <div class="form-group">
+            <label>Tanggal Produksi (Opsional)</label>
+            <input type="date" id="tglProduksi">
+          </div>
+          <div class="form-group">
+            <label>Supplier</label>
+            <input type="text" id="supplier" placeholder="Nama supplier" autocomplete="off">
           </div>
           <div class="form-group">
             <label>Tanggal ED (Kedaluwarsa) *</label>
@@ -154,7 +152,7 @@
           <select id="filterStatus" onchange="render()">
             <option value="all">Semua</option>
             <option value="lolos">✅ Lolos</option>
-            <option value="warning">️ Warn</option>
+            <option value="warning">⚠️ Warn</option>
             <option value="reject">❌ Reject</option>
           </select>
         </div>
@@ -171,20 +169,20 @@
           <textarea id="catatanLaporan" rows="5" placeholder="Tulis catatan hari ini..."></textarea>
           <div class="btn-row">
             <button class="btn-primary" onclick="simpanCatatan()">💾 Simpan</button>
-            <button class="btn-secondary" onclick="resetCatatan()">🔄 Reset</button>
+            <button class="btn-secondary" onclick="resetCatatan()"> Reset</button>
           </div>
         </div>
         <div class="card">
-          <h3> Riwayat Catatan</h3>
+          <h3>📚 Riwayat Catatan</h3>
           <div id="daftarRiwayat"></div>
         </div>
       </div>
     </main>
 
     <div class="bottom-actions">
-      <button class="btn-action" onclick="exportExcel()"> Export</button>
+      <button class="btn-action" onclick="exportExcel()">📊 Export</button>
       <button class="btn-action" onclick="tarikData()"> Tarik</button>
-      <button class="btn-action btn-danger" onclick="hapusSemua()">️ Hapus</button>
+      <button class="btn-action btn-danger" onclick="hapusSemua()">🗑️ Hapus</button>
     </div>
 
     <nav class="bottom-nav">
@@ -203,10 +201,10 @@
     </nav>
 
     <footer class="app-footer">
-      <p> <span id="hariIni"></span></p>
+      <p>📅 <span id="hariIni"></span></p>
     </footer>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>
