@@ -129,7 +129,7 @@ function previewStatus() {
     pesan = `⚠️ PERHATIAN — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
   } else {
     if (info.totalHari < 0) {
-      pesan = `❌ EXPIRED — ${channel}<br>Sudah lewat <strong>${Math.abs(info.totalHari)} hari</strong>!`;
+      pesan = ` EXPIRED — ${channel}<br>Sudah lewat <strong>${Math.abs(info.totalHari)} hari</strong>!`;
     } else {
       pesan = `❌ REJECT — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
     }
@@ -150,7 +150,7 @@ function tambahProduk() {
   const keterangan = document.getElementById('keterangan').value.trim();
 
   if (!nama || !tglED) {
-    alert('️ Nama produk dan Tanggal ED wajib diisi!');
+    alert('⚠️ Nama produk dan Tanggal ED wajib diisi!');
     return;
   }
 
@@ -223,7 +223,7 @@ function loadCatatan(id) {
   document.getElementById('catatanLaporan').value = c.isi;
   document.getElementById('namaPetugas').value = c.petugas === 'Tidak diketahui' ? '' : c.petugas;
   window.editingCatatanId = c.id;
-  alert('📥 Catatan ditarik. Klik "Simpan" untuk update.');
+  alert(' Catatan ditarik. Klik "Simpan" untuk update.');
 }
 
 function editCatatan(id) { loadCatatan(id); }
@@ -238,13 +238,13 @@ function hapusCatatan(id) {
 function renderRiwayat() {
   const container = document.getElementById('daftarRiwayat');
   if (catatanList.length === 0) {
-    container.innerHTML = '<div class="empty">📭 Belum ada catatan</div>';
+    container.innerHTML = '<div class="empty"> Belum ada catatan</div>';
     return;
   }
   container.innerHTML = catatanList.map(c => `
     <div class="catatan-card">
       <div class="catatan-card-header">
-        <div class="catatan-tanggal">📅 ${c.tanggal} • ${c.waktu}</div>
+        <div class="catatan-tanggal"> ${c.tanggal} • ${c.waktu}</div>
         <div class="catatan-petugas">👤 ${c.petugas} | 📦 ${c.jumlahProduk} produk</div>
       </div>
       <div class="catatan-isi">${c.isi}</div>
@@ -265,7 +265,7 @@ function hapusProduk(id) {
 }
 
 function hapusSemua() {
-  if (!confirm('⚠️ Hapus SEMUA data produk & catatan?')) return;
+  if (!confirm('️ Hapus SEMUA data produk & catatan?')) return;
   produkList = [];
   catatanList = [];
   simpanData();
@@ -370,7 +370,7 @@ function exportExcel() {
         }
       }
     }
-    XLSX.utils.book_append_sheet(wb, wsCat, ' CATATAN');
+    XLSX.utils.book_append_sheet(wb, wsCat, '📝 CATATAN');
   }
 
   const ts = new Date().toISOString().split('T')[0];
@@ -382,7 +382,7 @@ function exportExcel() {
 function tarikData() {
   if (catatanList.length === 0) { alert('Belum ada riwayat!'); return; }
   const pilihan = catatanList.map((c,i) => `${i+1}. ${c.tanggal} - ${c.petugas}`).join('\n');
-  const nomor = prompt(` RIWAYAT:\n\n${pilihan}\n\nMasukkan nomor (1-${catatanList.length}):`);
+  const nomor = prompt(`📚 RIWAYAT:\n\n${pilihan}\n\nMasukkan nomor (1-${catatanList.length}):`);
   if (!nomor) return;
   const idx = parseInt(nomor) - 1;
   if (idx < 0 || idx >= catatanList.length) { alert('❌ Nomor tidak valid!'); return; }
@@ -435,7 +435,7 @@ function render() {
             <span class="status-badge ${badgeClass}">${statusLabel}</span>
           </div>
           <div class="sisa-detail">
-            <span class="big"> ${p.sisaDetail}</span>
+            <span class="big">📅 ${p.sisaDetail}</span>
             <span class="sub">${p.sisaHari} hari | Min ${rule.label}</span>
           </div>
           ${paletInfo}
