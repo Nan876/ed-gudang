@@ -73,18 +73,34 @@ body { padding-bottom: 130px; }
   color: #e0e0e0;
 }
 
-.btn-icon {
-  background: rgba(255,255,255,0.2);
-  border: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  font-size: 18px;
+/* TOMBOL SETTINGS YANG LEBIH KELIATAN */
+.btn-settings {
+  background: rgba(255,255,255,0.25);
+  border: 2px solid rgba(255,255,255,0.5);
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  color: white;
+  font-weight: 600;
+  font-size: 13px;
   flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.btn-settings:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+.settings-icon {
+  font-size: 18px;
+}
+
+.settings-text {
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .header-badges {
@@ -311,6 +327,39 @@ body { padding-bottom: 130px; }
 .palet-section h3 {
   font-size: 14px;
   margin-bottom: 10px;
+}
+
+/* Preview Umur Produk */
+.umur-preview {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  background: #e8f4f8;
+  color: #1e3c72;
+  border: 1px solid #b8d4e8;
+}
+
+.umur-preview.hidden { display: none; }
+
+.umur-preview.umur-normal {
+  background: #d4edda;
+  color: #155724;
+  border-color: #27ae60;
+}
+
+.umur-preview.umur-warning {
+  background: #fff3cd;
+  color: #856404;
+  border-color: #f39c12;
+}
+
+.umur-preview.umur-lama {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #e74c3c;
 }
 
 .preview {
