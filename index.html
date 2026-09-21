@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e3c72">
   <title>ED Monitor - Wings</title>
-  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
   <div class="app">
@@ -115,7 +115,7 @@
             <input type="date" id="tglED" onchange="previewStatus()">
           </div>
           <div class="palet-section">
-            <h3>📦 Kuantitas</h3>
+            <h3>📦 Kuantitas *</h3>
             <div class="form-row-2">
               <div class="form-group">
                 <label>Palet</label>
@@ -132,7 +132,7 @@
                 <input type="number" id="boxTambahan" value="0" min="0" onchange="hitungTotal()" inputmode="numeric">
               </div>
               <div class="form-group">
-                <label>Total Box</label>
+                <label>Total Box *</label>
                 <input type="text" id="totalBox" readonly class="readonly-input" placeholder="0">
               </div>
             </div>
@@ -152,7 +152,7 @@
           <select id="filterStatus" onchange="render()">
             <option value="all">Semua</option>
             <option value="lolos">✅ Lolos</option>
-            <option value="warning">⚠️ Warn</option>
+            <option value="warning">️ Warn</option>
             <option value="reject">❌ Reject</option>
           </select>
         </div>
@@ -169,7 +169,7 @@
           <textarea id="catatanLaporan" rows="5" placeholder="Tulis catatan hari ini..."></textarea>
           <div class="btn-row">
             <button class="btn-primary" onclick="simpanCatatan()">💾 Simpan</button>
-            <button class="btn-secondary" onclick="resetCatatan()"> Reset</button>
+            <button class="btn-secondary" onclick="resetCatatan()">🔄 Reset</button>
           </div>
         </div>
         <div class="card">
@@ -181,7 +181,7 @@
 
     <div class="bottom-actions">
       <button class="btn-action" onclick="exportExcel()">📊 Export</button>
-      <button class="btn-action" onclick="tarikData()"> Tarik</button>
+      <button class="btn-action" onclick="tarikData()">📥 Tarik</button>
       <button class="btn-action btn-danger" onclick="hapusSemua()">🗑️ Hapus</button>
     </div>
 
@@ -191,7 +191,7 @@
         <span class="nav-label">Input</span>
       </button>
       <button class="nav-item" onclick="switchTab('List', this)">
-        <span class="nav-icon">📋</span>
+        <span class="nav-icon"></span>
         <span class="nav-label">Daftar</span>
       </button>
       <button class="nav-item" onclick="switchTab('Catatan', this)">
@@ -205,6 +205,6 @@
     </footer>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
