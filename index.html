@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e3c72">
   <title>ED Monitor - Wings</title>
-  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
   <div class="app">
@@ -20,7 +20,10 @@
             <span class="company-name">Wings Group</span>
           </div>
         </div>
-        <button class="btn-icon" onclick="toggleSettings()">️</button>
+        <button class="btn-settings" onclick="toggleSettings()">
+          <span class="settings-icon">⚙️</span>
+          <span class="settings-text">Setting</span>
+        </button>
       </div>
       <div class="header-badges">
         <span class="badge-mt">MT: <span id="mtMin">6</span> bln</span>
@@ -29,31 +32,31 @@
     </header>
 
     <section class="settings-panel" id="settingsPanel">
-      <h3>️ Pengaturan Minimum ED</h3>
+      <h3>⚙️ Pengaturan Minimum ED</h3>
       <div class="setting-grid">
         <div class="setting-item">
-          <label>MT</label>
+          <label>MT (Modern Trade)</label>
           <div class="input-with-unit">
             <input type="number" id="mtBulan" value="6" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
           </div>
         </div>
         <div class="setting-item">
-          <label>GT</label>
+          <label>GT (General Trade)</label>
           <div class="input-with-unit">
             <input type="number" id="gtBulan" value="4" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
           </div>
         </div>
         <div class="setting-item">
-          <label>MT Warn</label>
+          <label>MT Warning</label>
           <div class="input-with-unit">
             <input type="number" id="mtWarningBulan" value="7" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
           </div>
         </div>
         <div class="setting-item">
-          <label>GT Warn</label>
+          <label>GT Warning</label>
           <div class="input-with-unit">
             <input type="number" id="gtWarningBulan" value="5" min="1" max="24" onchange="simpanSetting()">
             <span>bln</span>
@@ -100,15 +103,16 @@
           </div>
           <div class="form-group">
             <label>Nama Produk *</label>
-            <input type="text" id="nama" placeholder="Contoh: Susu UHT 1L" autocomplete="off">
+            <input type="text" id="nama" placeholder="" autocomplete="off">
           </div>
           <div class="form-group">
             <label>Tanggal Produksi (Opsional)</label>
-            <input type="date" id="tglProduksi">
+            <input type="date" id="tglProduksi" onchange="previewUmur()">
+            <div id="previewUmur" class="umur-preview hidden"></div>
           </div>
           <div class="form-group">
             <label>Supplier</label>
-            <input type="text" id="supplier" placeholder="Nama supplier" autocomplete="off">
+            <input type="text" id="supplier" placeholder="" autocomplete="off">
           </div>
           <div class="form-group">
             <label>Tanggal ED (Kedaluwarsa) *</label>
@@ -139,7 +143,7 @@
           </div>
           <div class="form-group">
             <label>Keterangan</label>
-            <input type="text" id="keterangan" placeholder="Opsional" autocomplete="off">
+            <input type="text" id="keterangan" placeholder="" autocomplete="off">
           </div>
           <div id="previewStatus" class="preview hidden"></div>
           <button class="btn-primary" onclick="tambahProduk()">💾 Simpan Produk</button>
@@ -148,12 +152,12 @@
 
       <div class="tab-content" id="tabList">
         <div class="filter-bar">
-          <input type="text" id="searchInput" placeholder=" Cari produk..." oninput="render()">
+          <input type="text" id="searchInput" placeholder="🔍 Cari produk..." oninput="render()">
           <select id="filterStatus" onchange="render()">
             <option value="all">Semua</option>
             <option value="lolos">✅ Lolos</option>
-            <option value="warning">️ Warn</option>
-            <option value="reject">❌ Reject</option>
+            <option value="warning">⚠️ Warn</option>
+            <option value="reject"> Reject</option>
           </select>
         </div>
         <div id="daftarProduk"></div>
@@ -169,7 +173,7 @@
           <textarea id="catatanLaporan" rows="5" placeholder="Tulis catatan hari ini..."></textarea>
           <div class="btn-row">
             <button class="btn-primary" onclick="simpanCatatan()">💾 Simpan</button>
-            <button class="btn-secondary" onclick="resetCatatan()"> Reset</button>
+            <button class="btn-secondary" onclick="resetCatatan()">🔄 Reset</button>
           </div>
         </div>
         <div class="card">
@@ -191,7 +195,7 @@
         <span class="nav-label">Input</span>
       </button>
       <button class="nav-item" onclick="switchTab('List', this)">
-        <span class="nav-icon"></span>
+        <span class="nav-icon">📋</span>
         <span class="nav-label">Daftar</span>
       </button>
       <button class="nav-item" onclick="switchTab('Catatan', this)">
@@ -201,10 +205,10 @@
     </nav>
 
     <footer class="app-footer">
-      <p> <span id="hariIni"></span></p>
+      <p>📅 <span id="hariIni"></span></p>
     </footer>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="script.js?v=5"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
