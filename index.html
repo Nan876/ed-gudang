@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e3c72">
   <title>ED Monitor - Wings</title>
-  <link rel="stylesheet" href="style.css?v=4">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
   <div class="app">
@@ -20,7 +20,7 @@
             <span class="company-name">Wings Group</span>
           </div>
         </div>
-        <button class="btn-icon" onclick="toggleSettings()">⚙️</button>
+        <button class="btn-icon" onclick="toggleSettings()">️</button>
       </div>
       <div class="header-badges">
         <span class="badge-mt">MT: <span id="mtMin">6</span> bln</span>
@@ -29,7 +29,7 @@
     </header>
 
     <section class="settings-panel" id="settingsPanel">
-      <h3>⚙️ Pengaturan Minimum ED</h3>
+      <h3>️ Pengaturan Minimum ED</h3>
       <div class="setting-grid">
         <div class="setting-item">
           <label>MT</label>
@@ -115,7 +115,7 @@
             <input type="date" id="tglED" onchange="previewStatus()">
           </div>
           <div class="palet-section">
-            <h3>📦 Kuantitas *</h3>
+            <h3>Quantity *</h3>
             <div class="form-row-2">
               <div class="form-group">
                 <label>Palet</label>
@@ -169,7 +169,7 @@
           <textarea id="catatanLaporan" rows="5" placeholder="Tulis catatan hari ini..."></textarea>
           <div class="btn-row">
             <button class="btn-primary" onclick="simpanCatatan()">💾 Simpan</button>
-            <button class="btn-secondary" onclick="resetCatatan()">🔄 Reset</button>
+            <button class="btn-secondary" onclick="resetCatatan()"> Reset</button>
           </div>
         </div>
         <div class="card">
@@ -201,10 +201,10 @@
     </nav>
 
     <footer class="app-footer">
-      <p>📅 <span id="hariIni"></span></p>
+      <p> <span id="hariIni"></span></p>
     </footer>
   </div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <script src="script.js?v=4"></script>
+  <script src="script.js?v=5"></script>
 </body>
 </html>
