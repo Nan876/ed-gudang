@@ -62,7 +62,6 @@ document.getElementById('tglCatatan').textContent = hariIni.toLocaleDateString('
   day: 'numeric', month: 'short', year: 'numeric'
 });
 
-// Tanggal produksi KOSONG default
 loadSettings();
 renderRiwayat();
 
@@ -118,9 +117,53 @@ function hitungStatus(tglED, channel) {
   let status, label;
   if (totalHari < 0) { status = 'reject'; label = '❌ EXPIRED'; }
   else if (totalHari < rule.minHari) { status = 'reject'; label = '❌ REJECT'; }
-  else if (totalHari < rule.warningHari) { status = 'warning'; label = '️ PERHATIAN'; }
+  else if (totalHari < rule.warningHari) { status = 'warning'; label = '⚠️ PERHATIAN'; }
   else { status = 'lolos'; label = '✅ LOLOS'; }
   return { status, label, detail, totalHari, rule };
+}
+
+// PREVIEW UMUR PRODUK (REAL-TIME DI FORM)
+function previewUmur() {
+  const tglProduksi = document.getElementById('tglProduksi').value;
+  const preview = document.getElementById('previewUmur');
+  
+  if (!tglProduksi) {
+    preview.classList.add('hidden');
+    preview.classList.remove('umur-normal', 'umur-warning', 'umur-lama');
+    return;
+  }
+  
+  const umurHari = hitungUmurProduk(tglProduksi);
+  
+  if (umurHari === null) {
+    preview.classList.add('hidden');
+    return;
+  }
+  
+  preview.classList.remove('hidden', 'umur-normal', 'umur-warning', 'umur-lama');
+  
+  let pesan = '';
+  let kelas = '';
+  
+  if (umurHari === 0) {
+    pesan = ' Diproduksi hari ini';
+    kelas = 'umur-normal';
+  } else if (umurHari === 1) {
+    pesan = '📅 Lewat 1 hari sejak produksi';
+    kelas = 'umur-normal';
+  } else if (umurHari <= 7) {
+    pesan = `📅 Lewat ${umurHari} hari sejak produksi`;
+    kelas = 'umur-normal';
+  } else if (umurHari <= 30) {
+    pesan = `📅 Lewat ${umurHari} hari sejak produksi`;
+    kelas = 'umur-warning';
+  } else {
+    pesan = ` Lewat ${umurHari} hari sejak produksi (Produk lama)`;
+    kelas = 'umur-lama';
+  }
+  
+  preview.textContent = pesan;
+  preview.classList.add(kelas);
 }
 
 function previewStatus() {
@@ -137,7 +180,7 @@ function previewStatus() {
   if (info.status === 'lolos') {
     pesan = `✅ LOLOS — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
   } else if (info.status === 'warning') {
-    pesan = `⚠️ PERHATIAN — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
+    pesan = `️ PERHATIAN — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
   } else {
     if (info.totalHari < 0) {
       pesan = `❌ EXPIRED — ${channel}<br>Sudah lewat <strong>${Math.abs(info.totalHari)} hari</strong>!`;
@@ -204,6 +247,7 @@ function tambahProduk() {
   document.getElementById('totalBox').value = '';
   document.getElementById('keterangan').value = '';
   document.getElementById('previewStatus').classList.add('hidden');
+  document.getElementById('previewUmur').classList.add('hidden');
   window.currentTotalBox = 0;
 
   let umurInfo = umurHari !== null ? `\nUmur produk: Lewat ${umurHari} hari` : '';
@@ -261,20 +305,20 @@ function hapusCatatan(id) {
 function renderRiwayat() {
   const container = document.getElementById('daftarRiwayat');
   if (catatanList.length === 0) {
-    container.innerHTML = '<div class="empty"> Belum ada catatan</div>';
+    container.innerHTML = '<div class="empty">📭 Belum ada catatan</div>';
     return;
   }
   container.innerHTML = catatanList.map(c => `
     <div class="catatan-card">
       <div class="catatan-card-header">
         <div class="catatan-tanggal"> ${c.tanggal} • ${c.waktu}</div>
-        <div class="catatan-petugas">👤 ${c.petugas} |  ${c.jumlahProduk} produk</div>
+        <div class="catatan-petugas">👤 ${c.petugas} | 📦 ${c.jumlahProduk} produk</div>
       </div>
       <div class="catatan-isi">${c.isi}</div>
       <div class="catatan-actions-card">
         <button class="btn-load" onclick="loadCatatan(${c.id})">📥 Tarik</button>
         <button class="btn-edit" onclick="editCatatan(${c.id})">✏️ Edit</button>
-        <button class="btn-delete" onclick="hapusCatatan(${c.id})">🗑️</button>
+        <button class="btn-delete" onclick="hapusCatatan(${c.id})">️</button>
       </div>
     </div>
   `).join('');
@@ -362,7 +406,7 @@ function exportExcel() {
 
   if (produkList.length > 0) {
     const ws = buatSheet(buatBaris(produkList));
-    XLSX.utils.book_append_sheet(wb, ws, '📦 DATA PRODUK');
+    XLSX.utils.book_append_sheet(wb, ws, ' DATA PRODUK');
   }
 
   if (catatanList.length > 0) {
@@ -450,7 +494,6 @@ function render() {
       const rule = MT_RULES[p.channel];
       const paletInfo = (p.jumlahPalet > 0 || p.boxTambahan > 0) ? `<div class="palet-info">📦 ${p.totalBox} Box</div>` : '';
       
-      // Info umur produk - tampilkan "Lewat X hari"
       let umurInfo = '';
       if (p.tglProduksi && p.umurHari !== null) {
         if (p.umurHari === 0) {
@@ -464,7 +507,7 @@ function render() {
 
       return `
         <div class="product-card ${p.status}">
-          <button class="del-btn" onclick="hapusProduk(${p.id})"></button>
+          <button class="del-btn" onclick="hapusProduk(${p.id})">✕</button>
           <div class="product-header">
             <div>
               <div class="product-name">
@@ -475,7 +518,7 @@ function render() {
             <span class="status-badge ${badgeClass}">${statusLabel}</span>
           </div>
           <div class="sisa-detail">
-            <span class="big"> ${p.sisaDetail}</span>
+            <span class="big">📅 ${p.sisaDetail}</span>
             <span class="sub">${p.sisaHari} hari | Min ${rule.label}</span>
           </div>
           ${paletInfo}
