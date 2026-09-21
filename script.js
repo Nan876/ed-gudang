@@ -54,6 +54,7 @@ function switchTab(tabName, btn) {
   if (tabName === 'Catatan') renderRiwayat();
 }
 
+// Inisialisasi
 const hariIni = new Date();
 document.getElementById('hariIni').textContent = hariIni.toLocaleDateString('id-ID', {
   weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
@@ -61,6 +62,10 @@ document.getElementById('hariIni').textContent = hariIni.toLocaleDateString('id-
 document.getElementById('tglCatatan').textContent = hariIni.toLocaleDateString('id-ID', {
   day: 'numeric', month: 'short', year: 'numeric'
 });
+
+// Auto-isi tanggal produksi dengan hari ini
+const todayISO = hariIni.toISOString().split('T')[0];
+document.getElementById('tglProduksi').value = todayISO;
 
 loadSettings();
 renderRiwayat();
@@ -98,6 +103,17 @@ function formatSisaWaktu(d) {
   return p.length ? p.join(' ') : '0 hari';
 }
 
+// HITUNG UMUR PRODUK (dari tglProduksi ke hari ini)
+function hitungUmurProduk(tglProduksi) {
+  if (!tglProduksi) return null;
+  const produksi = new Date(tglProduksi);
+  produksi.setHours(0,0,0,0);
+  const sekarang = new Date();
+  sekarang.setHours(0,0,0,0);
+  const diffHari = Math.ceil((sekarang - produksi) / (1000 * 60 * 60 * 24));
+  return diffHari;
+}
+
 function hitungStatus(tglED, channel) {
   const sekarang = new Date(); sekarang.setHours(0,0,0,0);
   const ed = new Date(tglED); ed.setHours(0,0,0,0);
@@ -126,10 +142,10 @@ function previewStatus() {
   if (info.status === 'lolos') {
     pesan = `✅ LOLOS — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
   } else if (info.status === 'warning') {
-    pesan = `⚠️ PERHATIAN — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
+    pesan = `️ PERHATIAN — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
   } else {
     if (info.totalHari < 0) {
-      pesan = ` EXPIRED — ${channel}<br>Sudah lewat <strong>${Math.abs(info.totalHari)} hari</strong>!`;
+      pesan = `❌ EXPIRED — ${channel}<br>Sudah lewat <strong>${Math.abs(info.totalHari)} hari</strong>!`;
     } else {
       pesan = `❌ REJECT — ${channel} (Min ${rule.label})<br>Sisa ED: <strong>${sisa}</strong> (${info.totalHari} hari)`;
     }
@@ -137,6 +153,7 @@ function previewStatus() {
   preview.innerHTML = pesan;
 }
 
+// TAMBAH PRODUK - dengan validasi quantity
 function tambahProduk() {
   const channel = document.querySelector('input[name="channel"]:checked').value;
   const nama = document.getElementById('nama').value.trim();
@@ -149,16 +166,28 @@ function tambahProduk() {
   const tglED = document.getElementById('tglED').value;
   const keterangan = document.getElementById('keterangan').value.trim();
 
-  if (!nama || !tglED) {
-    alert('⚠️ Nama produk dan Tanggal ED wajib diisi!');
+  // Validasi wajib
+  if (!nama) {
+    alert('⚠️ Nama produk wajib diisi!');
+    return;
+  }
+  if (!tglED) {
+    alert('⚠️ Tanggal ED wajib diisi!');
+    return;
+  }
+  if (totalBox <= 0) {
+    alert('️ Quantity (Total Box) wajib diisi! Minimal 1 box.');
     return;
   }
 
   const info = hitungStatus(tglED, channel);
 
   if (info.status === 'reject') {
-    if (!confirm(`❌ PRODUK DI BAWAH MT ED!\n\nED: ${formatTgl(tglED)}\nSisa: ${info.totalHari} hari\nMin: ${info.rule.minHari} hari\n\nTetap simpan sebagai REJECT?`)) return;
+    if (!confirm(`❌ PRODUK DI BAWAH MINIMUM ED!\n\nED: ${formatTgl(tglED)}\nSisa: ${info.totalHari} hari\nMin: ${info.rule.minHari} hari\n\nTetap simpan sebagai REJECT?`)) return;
   }
+
+  // Hitung umur produk
+  const umurHari = hitungUmurProduk(tglProduksi);
 
   produkList.push({
     id: Date.now(),
@@ -168,6 +197,7 @@ function tambahProduk() {
     status: info.status,
     sisaHari: info.totalHari,
     sisaDetail: formatSisaWaktu(info.detail),
+    umurHari: umurHari,
     tglInput: new Date().toISOString()
   });
 
@@ -175,7 +205,7 @@ function tambahProduk() {
   render();
 
   document.getElementById('nama').value = '';
-  document.getElementById('tglProduksi').value = '';
+  document.getElementById('tglProduksi').value = todayISO;
   document.getElementById('supplier').value = '';
   document.getElementById('jumlahPalet').value = '0';
   document.getElementById('boxTambahan').value = '0';
@@ -184,7 +214,8 @@ function tambahProduk() {
   document.getElementById('previewStatus').classList.add('hidden');
   window.currentTotalBox = 0;
 
-  alert(`${info.label}\n\n${nama}\nED: ${formatTgl(tglED)}\nTotal: ${totalBox} Box`);
+  let umurInfo = umurHari !== null ? `\nUmur produk: ${umurHari} hari` : '';
+  alert(`${info.label}\n\n${nama}\nED: ${formatTgl(tglED)}\nTotal: ${totalBox} Box${umurInfo}`);
 }
 
 function simpanCatatan() {
@@ -223,7 +254,7 @@ function loadCatatan(id) {
   document.getElementById('catatanLaporan').value = c.isi;
   document.getElementById('namaPetugas').value = c.petugas === 'Tidak diketahui' ? '' : c.petugas;
   window.editingCatatanId = c.id;
-  alert(' Catatan ditarik. Klik "Simpan" untuk update.');
+  alert('📥 Catatan ditarik. Klik "Simpan" untuk update.');
 }
 
 function editCatatan(id) { loadCatatan(id); }
@@ -238,7 +269,7 @@ function hapusCatatan(id) {
 function renderRiwayat() {
   const container = document.getElementById('daftarRiwayat');
   if (catatanList.length === 0) {
-    container.innerHTML = '<div class="empty"> Belum ada catatan</div>';
+    container.innerHTML = '<div class="empty">📭 Belum ada catatan</div>';
     return;
   }
   container.innerHTML = catatanList.map(c => `
@@ -251,7 +282,7 @@ function renderRiwayat() {
       <div class="catatan-actions-card">
         <button class="btn-load" onclick="loadCatatan(${c.id})">📥 Tarik</button>
         <button class="btn-edit" onclick="editCatatan(${c.id})">✏️ Edit</button>
-        <button class="btn-delete" onclick="hapusCatatan(${c.id})">🗑️</button>
+        <button class="btn-delete" onclick="hapusCatatan(${c.id})">️</button>
       </div>
     </div>
   `).join('');
@@ -265,7 +296,7 @@ function hapusProduk(id) {
 }
 
 function hapusSemua() {
-  if (!confirm('️ Hapus SEMUA data produk & catatan?')) return;
+  if (!confirm('⚠️ Hapus SEMUA data produk & catatan?')) return;
   produkList = [];
   catatanList = [];
   simpanData();
@@ -289,11 +320,14 @@ function exportExcel() {
     return;
   }
   const wb = XLSX.utils.book_new();
-  const headers = ['No', 'Channel', 'Nama Produk', 'Tgl Produksi', 'Supplier', 'Palet', 'Box/Palet', 'Box Sisa', 'Total Box', 'Tanggal ED', 'Sisa Waktu', 'Sisa Hari', 'Status', 'Keterangan'];
-  const colW = [{wch: 5}, {wch: 8}, {wch: 25}, {wch: 15}, {wch: 18}, {wch: 6}, {wch: 10}, {wch: 9}, {wch: 10}, {wch: 13}, {wch: 18}, {wch: 9}, {wch: 10}, {wch: 25}];
+  const headers = ['No', 'Channel', 'Nama Produk', 'Tgl Produksi', 'Umur (Hari)', 'Supplier', 'Palet', 'Box/Palet', 'Box Sisa', 'Total Box', 'Tanggal ED', 'Sisa Waktu', 'Sisa Hari', 'Status', 'Keterangan'];
+  const colW = [{wch: 5}, {wch: 8}, {wch: 25}, {wch: 15}, {wch: 10}, {wch: 18}, {wch: 6}, {wch: 10}, {wch: 9}, {wch: 10}, {wch: 13}, {wch: 18}, {wch: 9}, {wch: 10}, {wch: 25}];
 
   function buatBaris(list) {
-    return list.map((p, i) => [i + 1, p.channel, p.nama, formatTgl(p.tglProduksi), p.supplier||'-', p.jumlahPalet||0, p.boxPerPalet||279, p.boxTambahan||0, p.totalBox||0, formatTgl(p.tglED), p.sisaDetail, p.sisaHari, p.status.toUpperCase(), p.keterangan||'-']);
+    return list.map((p, i) => {
+      const umur = hitungUmurProduk(p.tglProduksi);
+      return [i + 1, p.channel, p.nama, formatTgl(p.tglProduksi), umur !== null ? umur : '-', p.supplier||'-', p.jumlahPalet||0, p.boxPerPalet||279, p.boxTambahan||0, p.totalBox||0, formatTgl(p.tglED), p.sisaDetail, p.sisaHari, p.status.toUpperCase(), p.keterangan||'-'];
+    });
   }
 
   function buatSheet(data) {
@@ -320,8 +354,8 @@ function exportExcel() {
               alignment: {horizontal: 'center', vertical: 'center'},
               border: {top: {style: 'thin', color: {rgb: 'CCCCCC'}}, bottom: {style: 'thin', color: {rgb: 'CCCCCC'}}, left: {style: 'thin', color: {rgb: 'CCCCCC'}}, right: {style: 'thin', color: {rgb: 'CCCCCC'}}}
             };
-            if (C === 2 || C === 4 || C === 13) ws[addr].s.alignment.horizontal = 'left';
-            if (C === 12) {
+            if (C === 2 || C === 5 || C === 14) ws[addr].s.alignment.horizontal = 'left';
+            if (C === 13) {
               const status = ws[addr].v;
               if (status === 'LOLOS') { ws[addr].s.fill = {fgColor: {rgb: 'D4EDDA'}}; ws[addr].s.font = {color: {rgb: '155724'}, sz: 11, name: 'Calibri', bold: true}; }
               else if (status === 'PERHATIAN' || status === 'WARNING') { ws[addr].s.fill = {fgColor: {rgb: 'FFF3CD'}}; ws[addr].s.font = {color: {rgb: '856404'}, sz: 11, name: 'Calibri', bold: true}; }
@@ -385,7 +419,7 @@ function tarikData() {
   const nomor = prompt(`📚 RIWAYAT:\n\n${pilihan}\n\nMasukkan nomor (1-${catatanList.length}):`);
   if (!nomor) return;
   const idx = parseInt(nomor) - 1;
-  if (idx < 0 || idx >= catatanList.length) { alert('❌ Nomor tidak valid!'); return; }
+  if (idx < 0 || idx >= catatanList.length) { alert(' Nomor tidak valid!'); return; }
   loadCatatan(catatanList[idx].id);
 }
 
@@ -399,6 +433,7 @@ function render() {
     p.status = info.status;
     p.sisaHari = info.totalHari;
     p.sisaDetail = formatSisaWaktu(info.detail);
+    p.umurHari = hitungUmurProduk(p.tglProduksi);
   });
   simpanData();
 
@@ -415,13 +450,26 @@ function render() {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = '<div class="empty">📭 Belum ada produk</div>';
+    container.innerHTML = '<div class="empty"> Belum ada produk</div>';
   } else {
     container.innerHTML = filtered.map(p => {
       const badgeClass = 'badge-' + p.status;
       const statusLabel = p.status === 'lolos' ? '✅ LOLOS' : p.status === 'warning' ? '⚠️ WARN' : '❌ REJECT';
       const rule = MT_RULES[p.channel];
       const paletInfo = (p.jumlahPalet > 0 || p.boxTambahan > 0) ? `<div class="palet-info">📦 ${p.totalBox} Box</div>` : '';
+      
+      // Info umur produk
+      let umurInfo = '';
+      if (p.tglProduksi && p.umurHari !== null) {
+        if (p.umurHari === 0) {
+          umurInfo = `<div class="product-batch">Produksi: ${formatTgl(p.tglProduksi)} (Hari ini)</div>`;
+        } else if (p.umurHari === 1) {
+          umurInfo = `<div class="product-batch">Produksi: ${formatTgl(p.tglProduksi)} (1 hari lalu)</div>`;
+        } else {
+          umurInfo = `<div class="product-batch">Produksi: ${formatTgl(p.tglProduksi)} (${p.umurHari} hari lalu)</div>`;
+        }
+      }
+
       return `
         <div class="product-card ${p.status}">
           <button class="del-btn" onclick="hapusProduk(${p.id})">✕</button>
@@ -430,7 +478,7 @@ function render() {
               <div class="product-name">
                 <span class="channel-tag ${p.channel.toLowerCase()}">${p.channel}</span>${p.nama}
               </div>
-              ${p.tglProduksi ? `<div class="product-batch">Produksi: ${formatTgl(p.tglProduksi)}</div>` : ''}
+              ${umurInfo}
             </div>
             <span class="status-badge ${badgeClass}">${statusLabel}</span>
           </div>
